@@ -27,17 +27,27 @@ fn main() {
     path.read_dir()
         .expect("Trouble reading path")
         // first, validate that all files CAN be renamed
-        .map(|entry| {
+        .filter_map(|entry| {
             let entry_path = entry.expect("Trouble reading entry item.").path();
 
             if !entry_path.is_file() {
-                Error::raw(ErrorKind::Io, "Directory must only contain files.").exit();
+                return None;
+            }
+
+            if entry_path
+                .file_name()
+                .expect("Failed to read file name")
+                .to_str()
+                .expect("Failed to convert file name to string")
+                == ".DS_Store"
+            {
+                return None;
             }
 
             let new_file_name = Uuid::new_v4().to_string();
             let extension = entry_path
                 .extension()
-                .expect("All files must have extensions")
+                .expect(format!("All files must have extensions: {:?}", entry_path).as_str())
                 .to_str()
                 .expect("Trouble converting extension to string")
                 .to_string();
@@ -46,7 +56,7 @@ fn main() {
                 .with_file_name(new_file_name)
                 .with_extension(extension);
 
-            return (entry_path, new_path);
+            return Some((entry_path, new_path));
         })
         // if all files CAN be renamed, then rename them
         .for_each(|(old_path, new_path)| {
