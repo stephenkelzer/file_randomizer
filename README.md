@@ -8,12 +8,16 @@ CLI to randomize file names in a directory
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ```
 
+## Execute CLI:
+```
+   cargo -- <PATH> [--dry-run]
+```
 
-## Available CLI Commands:
+## CLI Help Command:
 ```
-cargo run -- --help
+   cargo -- --help
 ```
 
-```
-cargo run -- <PATH>
-```
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/19741798/191897209-3a041c93-4623-436b-9f14-e2dfec63cddc.png">
+</p>
