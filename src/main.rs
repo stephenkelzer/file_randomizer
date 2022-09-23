@@ -6,10 +6,13 @@ use uuid::Uuid;
 
 /// File Randomizer. Randomizes the names of the files in a directory so that they are in a random order.
 #[derive(Parser, Debug)]
-#[clap(author, about, long_about = None)]
 struct Args {
     /// The path to the directory that you would like to randomize the files of
     path: String,
+
+    /// Whether or not to actually rename the files.
+    #[clap(short, long)]
+    dry_run: bool,
 }
 
 fn main() {
@@ -47,6 +50,10 @@ fn main() {
         })
         // if all files CAN be renamed, then rename them
         .for_each(|(old_path, new_path)| {
-            fs::rename(old_path, new_path).expect("Failed to rename file");
+            if args.dry_run {
+                println!("{} -> {}", old_path.display(), new_path.display());
+            } else {
+                fs::rename(old_path, new_path).expect("Failed to rename file");
+            }
         });
 }
