@@ -10,9 +10,9 @@ struct Args {
     /// The path to the directory that you would like to randomize the files of
     path: String,
 
-    /// Whether or not to actually rename the files.
+    /// This CLI operates in "dry-run" mode by default (for safety). Setting this flag to 'true' will actually rename the files.
     #[clap(short, long)]
-    dry_run: bool,
+    execute: bool,
 }
 
 fn main() {
@@ -50,10 +50,10 @@ fn main() {
         })
         // if all files CAN be renamed, then rename them
         .for_each(|(old_path, new_path)| {
-            if args.dry_run {
-                println!("{} -> {}", old_path.display(), new_path.display());
-            } else {
+            if args.execute {
                 fs::rename(old_path, new_path).expect("Failed to rename file");
+            } else {
+                println!("{} -> {}", old_path.display(), new_path.display());
             }
         });
 }
